@@ -1,25 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 
+import { LogService } from '../../services/log.service';
+
+import { Log } from '../../models/Log';
 @Component({
   selector: 'app-logs',
   templateUrl: './logs.component.html',
   styleUrls: ['./logs.component.css']
 })
 export class LogsComponent implements OnInit {
-  logs: {
-    id: string,
-    text: string,
-    date: any
-  }[];
+  logs: Log[];
 
-  constructor() { }
+  constructor(private logService: LogService) { }
 
   ngOnInit() {
-    this.logs = [
-      {id: '1', text: 'Generated Components', date: new Date ('01/15/2019 12:01:02')},
-      {id: '2', text: 'Added Bootstra', date: new Date ('01/15/2019 14:02:03')},
-      {id: '3', text: 'Added logs components', date: new Date ('01/15/2019 16:04:04')}
-    ];
+    this.logService.getLogs().subscribe(logs => {
+      this.logs = logs;
+    });
   }
 
+  onSelect(log: Log){
+    this.logService.setFormLog(log);
+  }
+
+  onDelete(log: Log ) {
+    if (confirm('Are you sure?')) {
+      this.logService.deleteLog(log);
+    }
+  }
 }
